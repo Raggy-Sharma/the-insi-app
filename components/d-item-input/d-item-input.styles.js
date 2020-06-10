@@ -10,6 +10,7 @@ export const DItemInputStyle = StyleSheet.create({
         padding: 10,
         borderColor: '#000',
         borderWidth: 1,
-        width: '80%'
+        flex: 1,
+        marginHorizontal: 5
     }
 })

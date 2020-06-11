@@ -13,12 +13,13 @@ const DItemsModal = props => {
 
     const addIemHandler = () => {
         if (dItem && dQty)
-            setDItemList(dItemList => [...dItemList, { id: dItemList.length.toString(), value: dItem, quantity: dQty}])
+            setDItemList(dItemList => [...dItemList, { id: dItemList.length.toString(), value: dItem, quantity: dQty }])
     }
 
     const saveItemsListHandler = () => {
         if (dItemList.length) {
-            props.onSavePress(dItemList, props.modalTitle); 
+            props.onSavePress(dItemList, props.modalTitle);
+            setDItemList([]);
             props.onCancel();
             setDItem('');
             setDQty('')
@@ -47,9 +48,7 @@ const DItemsModal = props => {
                     <View style={DModalStyles.modalBtn}><Button title='Save' onPress={saveItemsListHandler} /></View>
                     <View style={DModalStyles.modalBtn}><Button title='Cancel' color="#f00" onPress={props.onCancel} buttonStyle={{ backgroundColor: 'red' }} /></View>
                 </View>
-                <View>
-                    <FlatList keyExtractor={(item) => item.id} data={dItemList} renderItem={itemData => <View><DListItem listItem={itemData.item} /></View>} />
-                </View>
+                <FlatList keyExtractor={(item) => item.id} data={dItemList} renderItem={itemData => <View><DListItem listItem={itemData.item} /></View>} />
             </View>
         </Modal>
     )

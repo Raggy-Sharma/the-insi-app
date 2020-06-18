@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, FlatList, LayoutAnimation, Platform, TouchableOpacity, UIManager, } from 'react-native';
 import { AppStyles } from '../../App.styles'
 import DItemInput from '../d-item-input/d-item-input'
@@ -34,13 +34,8 @@ const ShopsListComp = props => {
   }
 
   const editItemsModalHandler = (item) => {
-    // console.log(item.shopName)
-    const shoppingListDetails = { shopId: item.id, shopName: item.shopName, shoppingList: item.shoppingList };
-    console.log(availableShoppingList.length)
-    if(!availableShoppingList.find(ele => ele.shopId === shoppingListDetails.shopId))
-      dispatch(addShoppingList(shoppingListDetails));
-    setShopDetails(shoppingListDetails)
-    // console.log('shoppingListDetails', shoppingListDetails)
+    console.log('came')
+    setShopDetails({ shopId: item.id, shopName: item.shopName})
     setTimeout(() => setShowEditModal(true), 100)
   }
 
@@ -56,7 +51,7 @@ const ShopsListComp = props => {
         <TouchableOpacity activeOpacity={0.8} onPress={() => expandList(itemData.item)} onLongPress={() => editItemsModalHandler(itemData.item)}>
           <DListItem listItem={itemData.item} />
         </TouchableOpacity>
-        {itemData.item.expanded && (<FlatList style={{ padding: 5, backgroundColor: '#35b5ff', borderBottomLeftRadius: 20 }} data={itemData.item.shoppingList} keyExtractor={ele => ele.id} renderItem={element => <View style={{ padding: 10, borderBottomColor: '#000', borderBottomWidth: 0.25, flexDirection: 'row', justifyContent: "space-between" }}><Text>{element.item.value}</Text><Text>{element.item.quantity}</Text></View>} />)}
+        {itemData.item.expanded && (<FlatList style={{ padding: 5, backgroundColor: '#35b5ff', borderBottomLeftRadius: 20 }} data={availableShoppingList.find(ele => ele.shopId === itemData.item.id && ele.shopName === itemData.item.shopName).shoppingList} keyExtractor={ele => ele.id} renderItem={element => <View style={{ padding: 10, borderBottomColor: '#000', borderBottomWidth: 0.25, flexDirection: 'row', justifyContent: "space-between" }}><Text>{element.item.value}</Text><Text>{element.item.quantity}</Text></View>} />)}
         {/* {itemData.item.initEditModal && <DItemsEditModal isModalShow={showEditModal} itemsToEdit={itemData.item} closeEditModal={() => { closeModalHandler(itemData.item) }} />} */}
       </View>} style={AppStyles.listContainer} />
       {shopDetails !== undefined && <DItemsEditModal isModalShow={showEditModal} closeEditModal={closeEditModalHandler} shpDetails={shopDetails}/>}

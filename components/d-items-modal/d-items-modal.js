@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Modal, TextInput, Text, FlatList, ScrollView } from 'react-native';
 import { Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { DModalStyles } from './d-litems-modal.styles'
 import DListItem from '../d-list-item/d-list-item';
 import { useSelector, useDispatch } from 'react-redux';
-import { addNewShop } from '../../store/actions/shopsList'
+import { addNewShop, addShoppingList } from '../../store/actions/shopsList'
 import moment from 'moment';
 
 const DItemsModal = props => {
@@ -24,7 +24,9 @@ const DItemsModal = props => {
     }
 
     const saveItemsListHandler = () => {
-        dispatch(addNewShop({ id: availableShops.length.toString(), shopName: props.modalHeader, timeStamp: moment().format('DD MMM, YYYY hh:mm'), shoppingList: dItemList }))
+        var shpid = availableShops.length.toString()
+        dispatch(addNewShop({ id: shpid, shopName: props.modalHeader, timeStamp: moment().format('DD MMM, YYYY hh:mm')}))
+        dispatch(addShoppingList({ shopId: shpid, shopName: props.modalHeader, shoppingList: dItemList }));
         setDItem('');
         setDQty('');
         setDItemList([])

@@ -11,11 +11,13 @@ const DItemsEditModal = props => {
     const [itemsToEdit, setItemsToEdit] = useState();
     const shoppingList = useSelector(state => state.shopsList.shoppingList);
     const dispatch = useDispatch();
-    // console.log('shoppingList', shoppingList)
+    const state = useSelector(state => state.shopsList);
     useEffect(() => {
         if (shoppingList.length > 0) {
-            setItemsToEdit(shoppingList.find(ele => ele.shopName === props.shpDetails.shopName).shoppingList)
-            console.log('came', shoppingList)
+            setItemsToEdit(shoppingList.find(ele => ele.shopName === props.shpDetails.shopName && ele.shopId === props.shpDetails.shopId).shoppingList)
+        }
+        return () => {
+            console.log("Behavior right before the component is removed from the DOM.");
         }
     }, [shoppingList])
     const onShare = async () => {

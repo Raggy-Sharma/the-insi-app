@@ -4,12 +4,19 @@ import { Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { DModalStyles } from './d-litems-modal.styles'
 import DListItem from '../d-list-item/d-list-item';
+import { useSelector, useDispatch } from 'react-redux';
+import { addNewShop } from '../../store/actions/shopsList'
+import moment from 'moment';
 
 const DItemsModal = props => {
 
     const [dItem, setDItem] = useState('');
     const [dQty, setDQty] = useState('');
-    const [dItemList, setDItemList] = useState([]);
+    const [dItemList, setDItemList] = useState([]);  
+    const availableShops = useSelector(state => state.shopsList.listOfShops)
+    const dispatch = useDispatch()
+
+
 
     const addIemHandler = () => {
         if (dItem && dQty)
@@ -17,19 +24,17 @@ const DItemsModal = props => {
     }
 
     const saveItemsListHandler = () => {
-        if (dItemList.length) {
-            props.onSavePress(dItemList, props.modalTitle);
-            setDItemList([]);
-            props.onCancel();
-            setDItem('');
-            setDQty('')
-        }
+        dispatch(addNewShop({ id: availableShops.length.toString(), shopName: props.modalHeader, timeStamp: moment().format('DD MMM, YYYY hh:mm'), shoppingList: dItemList }))
+        setDItem('');
+        setDQty('');
+        setDItemList([])
+        props.onCancel();
     }
 
     return (
-        <Modal visible={props.showInputModal} animationType='slide'>
+        <Modal visible={props.showModal} animationType='slide'>
             <View style={DModalStyles.modalContainer}>
-                <Text style={DModalStyles.modalHeader}>Items from {props.modalTitle}</Text>
+                <Text style={DModalStyles.modalHeader}>Items from {props.modalHeader}</Text>
                 <View style={{ flexDirection: 'row', marginVertical: 10, alignItems: 'center' }}>
                     <TextInput placeholder='Enter Item' placeholderTextColor='#525050' style={{ flex: 0.8, borderColor: '#000', borderWidth: 1, padding: 10, marginHorizontal: 5 }} onChangeText={setDItem} value={dItem} />
                     <TextInput placeholder='qty' placeholderTextColor='#525050' style={{ flex: 0.2, borderColor: '#000', borderWidth: 1, padding: 10, marginHorizontal: 5 }} onChangeText={setDQty} value={dQty} />

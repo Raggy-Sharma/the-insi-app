@@ -5,7 +5,7 @@ import { View, Text } from 'react-native';
 const DListItem = props => {
     return (
         <View style={{backgroundColor: '#69c8ff', padding: 15, marginVertical: 5, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderTopRightRadius: 20}}>
-            <Text>{props.listItem.value}</Text>
+            <Text>{props.listItem.shopName}</Text>
             <Text style={{fontSize: 10}}>{props.listItem.timeStamp}</Text>
         </View>
     )

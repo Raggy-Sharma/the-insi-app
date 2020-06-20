@@ -34,7 +34,6 @@ const ShopsListComp = props => {
   }
 
   const editItemsModalHandler = (item) => {
-    console.log('came')
     setShopDetails({ shopId: item.id, shopName: item.shopName})
     setTimeout(() => setShowEditModal(true), 100)
   }

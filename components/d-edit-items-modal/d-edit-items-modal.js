@@ -16,9 +16,6 @@ const DItemsEditModal = props => {
         if (shoppingList.length > 0) {
             setItemsToEdit(shoppingList.find(ele => ele.shopName === props.shpDetails.shopName && ele.shopId === props.shpDetails.shopId).shoppingList)
         }
-        return () => {
-            console.log("Behavior right before the component is removed from the DOM.");
-        }
     }, [shoppingList])
     const onShare = async () => {
         try {
@@ -50,7 +47,7 @@ const DItemsEditModal = props => {
     return (
         <Modal visible={props.isModalShow} animationType='slide'>
             <View style={DItemsEditModalStyles.ModalContainer}>
-                <View ><Text style={DItemsEditModalStyles.ModalHeader}>asda</Text></View>
+                <View ><Text style={DItemsEditModalStyles.ModalHeader}>Items from {props.shpDetails.shopName}</Text></View>
                 <FlatList style={DItemsEditModalStyles.ItemsList} keyExtractor={(item) => item.id} data={itemsToEdit} renderItem={itemData =>
                     <View>
                         <View style={{ flexDirection: 'row', backgroundColor: '#ffff80', justifyContent: "space-between", paddingVertical: 20, paddingHorizontal: 40, borderBottomColor: '#000', borderBottomWidth: 0.25 }}>

@@ -15,8 +15,8 @@ const shopsListReducer = (state = initialState, action) => {
         };
         case EDIT_SHOPPING_LIST: {
             var index = state.shoppingList.indexOf(state.shoppingList.find(ele => ele.shopId === action.editedList.shopId && ele.shopName === action.editedList.shopName))
-            state.shoppingList.splice(index, 1, action.editedList)
-            return {...state, shoppingList: state.shoppingList.splice(index, 1, action.editedList)}
+            state.shoppingList.splice(index, 1, action.editedList);
+            return {...state, shoppingList: [...state.shoppingList]}
         }
         default: {
             return state

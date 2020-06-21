@@ -9,6 +9,8 @@ import { editShoppingList } from '../../store/actions/shopsList'
 const DItemsEditModal = props => {
     const [shareData, setShareData] = useState('');
     const [itemsToEdit, setItemsToEdit] = useState();
+    const [editableItem, setEditableItem] = useState('');
+    const [editedItems, setEdittedItems] = useState([]);
     const [editIcon, setEditIcon] = useState(true);
     const [saveIcon, setSaveIcon] = useState(false);
     const shoppingList = useSelector(state => state.shopsList.shoppingList);
@@ -22,7 +24,7 @@ const DItemsEditModal = props => {
     const onShare = async () => {
         try {
             const result = await Share.share({
-                message: props.itemsToEdit.shoppingList.map(ele => ele.value + ' - ' + ele.quantity).join('\n')
+                message: itemsToEdit.map(ele => ele.value + ' - ' + ele.quantity).join('\n')
             });
             if (result.action === Share.sharedAction) {
                 if (result.activityType) {
@@ -46,7 +48,8 @@ const DItemsEditModal = props => {
 
     const onSavePressHandler = () => {
         setSaveIcon(false);
-        setEditIcon(true)
+        setEditIcon(true);
+        dispatch(editShoppingList({ shopId: props.shpDetails.shopId, shopName: props.shpDetails.shopName, shoppingList: editedItems }))
     }
 
     const onDeletePressHandler = (deleteItem) => {
@@ -57,6 +60,16 @@ const DItemsEditModal = props => {
 
     const closeEditModalHandler = () => {
         props.closeEditModal()
+    }
+
+    const ItemValueChangedHandler = (event) => {
+        const { eventCount, target, text } = event.nativeEvent;
+        setEditableItem(text);
+    };
+
+    const InputBlurHandler = (item) => {
+        setEdittedItems([...editedItems, {id: item.id, quantity: item.quantity, value: editableItem}]);
+        setEditableItem('');
     }
 
     return (
@@ -79,17 +92,8 @@ const DItemsEditModal = props => {
                 <FlatList style={DItemsEditModalStyles.ItemsList} keyExtractor={(item) => item.id} data={itemsToEdit} renderItem={itemData =>
                     <View>
                         <View style={{ flexDirection: 'row', backgroundColor: '#ffff80', justifyContent: "space-between", paddingVertical: 20, paddingHorizontal: 10, borderBottomColor: '#000', borderBottomWidth: 0.25 }}>
-                            <Text style={{ width: '60%' }}>{itemData.item.value}</Text>
+                            <TextInput style={{ width: '70%' }} placeholder={itemData.item.value} placeholderTextColor='#000' onChange={ItemValueChangedHandler} editable={saveIcon} onBlur={() => InputBlurHandler(itemData.item)} />
                             <Text style={{ width: '20%' }}>{itemData.item.quantity}</Text>
-                            {/* {itemData.item.edit &&
-                                <TouchableOpacity style={{ width: '10%' }} activeOpacity={0.8} onPress={() => onEditPressHandler(itemData.item)}>
-                                    <Icon name="pencil" size={15} color="#696b6a" />
-                                </TouchableOpacity>
-                            }
-                            {itemData.item.save &&
-                                <TouchableOpacity style={{ width: '10%' }} activeOpacity={0.8}>
-                                    <Icon name="floppy-o" size={15} color="#696b6a" />
-                                </TouchableOpacity>} */}
                             <TouchableOpacity style={{ width: '10%' }} activeOpacity={0.8} onPress={() => onDeletePressHandler(itemData.item)}>
                                 <Icon name="minus" size={15} color="#696b6a" />
                             </TouchableOpacity>

@@ -9,6 +9,8 @@ import { editShoppingList } from '../../store/actions/shopsList'
 const DItemsEditModal = props => {
     const [shareData, setShareData] = useState('');
     const [itemsToEdit, setItemsToEdit] = useState();
+    const [editIcon, setEditIcon] = useState(true);
+    const [saveIcon, setSaveIcon] = useState(false);
     const shoppingList = useSelector(state => state.shopsList.shoppingList);
     const dispatch = useDispatch();
     const state = useSelector(state => state.shopsList);
@@ -37,7 +39,20 @@ const DItemsEditModal = props => {
     };
 
     const onEditPressHandler = (editItem) => {
-        dispatch(editShoppingList({ shopId: props.shpDetails.shopId, shopName: props.shpDetails.shopName, shoppingList: [{ id: '0', quantity: '2 kgs', value: 'Ragi' }] }))
+        setEditIcon(false);
+        setSaveIcon(true)
+        // dispatch(editShoppingList({ shopId: props.shpDetails.shopId, shopName: props.shpDetails.shopName, shoppingList: [{ id: '0', quantity: '2 kgs', value: 'Ragi' }] }))
+    }
+
+    const onSavePressHandler = () => {
+        setSaveIcon(false);
+        setEditIcon(true)
+    }
+
+    const onDeletePressHandler = (deleteItem) => {
+        var index = itemsToEdit.indexOf(itemsToEdit.find(ele => ele.id === deleteItem.id));
+        itemsToEdit.splice(index, 1);
+        dispatch(editShoppingList({ shopId: props.shpDetails.shopId, shopName: props.shpDetails.shopName, shoppingList: itemsToEdit }))
     }
 
     const closeEditModalHandler = () => {
@@ -47,14 +62,36 @@ const DItemsEditModal = props => {
     return (
         <Modal visible={props.isModalShow} animationType='slide'>
             <View style={DItemsEditModalStyles.ModalContainer}>
-                <View ><Text style={DItemsEditModalStyles.ModalHeader}>Items from {props.shpDetails.shopName}</Text></View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View style={{ width: '90%' }}>
+                        <Text style={DItemsEditModalStyles.ModalHeader}>Items from {props.shpDetails.shopName}</Text>
+                    </View>
+                    {editIcon &&
+                        <TouchableOpacity style={{ width: '10%', marginVertical: 15 }} activeOpacity={0.8} onPress={onEditPressHandler}>
+                            <Icon name="pencil" size={15} color="#696b6a" />
+                        </TouchableOpacity>
+                    }
+                    {saveIcon &&
+                        <TouchableOpacity style={{ width: '10%', marginVertical: 15 }} activeOpacity={0.8} onPress={onSavePressHandler}>
+                            <Icon name="floppy-o" size={15} color="#696b6a" />
+                        </TouchableOpacity>}
+                </View>
                 <FlatList style={DItemsEditModalStyles.ItemsList} keyExtractor={(item) => item.id} data={itemsToEdit} renderItem={itemData =>
                     <View>
-                        <View style={{ flexDirection: 'row', backgroundColor: '#ffff80', justifyContent: "space-between", paddingVertical: 20, paddingHorizontal: 40, borderBottomColor: '#000', borderBottomWidth: 0.25 }}>
-                            <Text >{itemData.item.value}</Text>
-                            <Text >{itemData.item.quantity}</Text>
-                            <TouchableOpacity activeOpacity={0.8} onPress={() => onEditPressHandler(itemData.item)}>
-                                <Icon name="pencil" size={15} color="#696b6a" />
+                        <View style={{ flexDirection: 'row', backgroundColor: '#ffff80', justifyContent: "space-between", paddingVertical: 20, paddingHorizontal: 10, borderBottomColor: '#000', borderBottomWidth: 0.25 }}>
+                            <Text style={{ width: '60%' }}>{itemData.item.value}</Text>
+                            <Text style={{ width: '20%' }}>{itemData.item.quantity}</Text>
+                            {/* {itemData.item.edit &&
+                                <TouchableOpacity style={{ width: '10%' }} activeOpacity={0.8} onPress={() => onEditPressHandler(itemData.item)}>
+                                    <Icon name="pencil" size={15} color="#696b6a" />
+                                </TouchableOpacity>
+                            }
+                            {itemData.item.save &&
+                                <TouchableOpacity style={{ width: '10%' }} activeOpacity={0.8}>
+                                    <Icon name="floppy-o" size={15} color="#696b6a" />
+                                </TouchableOpacity>} */}
+                            <TouchableOpacity style={{ width: '10%' }} activeOpacity={0.8} onPress={() => onDeletePressHandler(itemData.item)}>
+                                <Icon name="minus" size={15} color="#696b6a" />
                             </TouchableOpacity>
                         </View>
                     </View>

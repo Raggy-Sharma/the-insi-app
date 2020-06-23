@@ -10,6 +10,7 @@ const DItemsEditModal = props => {
     const [shareData, setShareData] = useState('');
     const [itemsToEdit, setItemsToEdit] = useState();
     const [editableItem, setEditableItem] = useState('');
+    const [editableQuantity, setEditableQuantity] = useState('');
     const [editedItems, setEdittedItems] = useState([]);
     const [editIcon, setEditIcon] = useState(true);
     const [saveIcon, setSaveIcon] = useState(false);
@@ -43,7 +44,6 @@ const DItemsEditModal = props => {
     const onEditPressHandler = (editItem) => {
         setEditIcon(false);
         setSaveIcon(true)
-        // dispatch(editShoppingList({ shopId: props.shpDetails.shopId, shopName: props.shpDetails.shopName, shoppingList: [{ id: '0', quantity: '2 kgs', value: 'Ragi' }] }))
     }
 
     const onSavePressHandler = () => {
@@ -67,9 +67,43 @@ const DItemsEditModal = props => {
         setEditableItem(text);
     };
 
-    const InputBlurHandler = (item) => {
-        setEdittedItems([...editedItems, {id: item.id, quantity: item.quantity, value: editableItem}]);
-        setEditableItem('');
+    const ItemQuantityChangedHandler = (event) => {
+        const { eventCount, target, text } = event.nativeEvent;
+        setEditableQuantity(text);
+    }
+
+    const InputValueBlurHandler = (item) => {
+        if (editableItem) {
+            if (editedItems.length) {
+                var exisistingItem = editedItems.find(ele => ele.id === item.id);
+                if (exisistingItem) {
+                    exisistingItem.value = editableItem;
+                } else {
+                    setEdittedItems([...editedItems, { id: item.id, quantity: item.quantity, value: editableItem }]);
+
+                }
+            } else {
+                setEdittedItems([...editedItems, { id: item.id, quantity: item.quantity, value: editableItem }]);
+            }
+            setEditableItem('');
+        }
+
+    }
+
+    const InputQuantityBlurHandler = (item) => {
+        if (editableQuantity) {
+            if (editedItems.length) {
+                var exisistingItem = editedItems.find(ele => ele.id === item.id);
+                if (exisistingItem) {
+                    exisistingItem.quantity = editableQuantity;
+                } else {
+                    setEdittedItems([...editedItems, { id: item.id, quantity: editableQuantity, value: item.value }]);
+                }
+            } else {
+                setEdittedItems([...editedItems, { id: item.id, quantity: editableQuantity, value: item.value }]);
+            }
+            setEditableQuantity('')
+        }
     }
 
     return (
@@ -92,8 +126,8 @@ const DItemsEditModal = props => {
                 <FlatList style={DItemsEditModalStyles.ItemsList} keyExtractor={(item) => item.id} data={itemsToEdit} renderItem={itemData =>
                     <View>
                         <View style={{ flexDirection: 'row', backgroundColor: '#ffff80', justifyContent: "space-between", paddingVertical: 20, paddingHorizontal: 10, borderBottomColor: '#000', borderBottomWidth: 0.25 }}>
-                            <TextInput style={{ width: '70%' }} placeholder={itemData.item.value} placeholderTextColor='#000' onChange={ItemValueChangedHandler} editable={saveIcon} onBlur={() => InputBlurHandler(itemData.item)} />
-                            <Text style={{ width: '20%' }}>{itemData.item.quantity}</Text>
+                            <TextInput style={{ width: '70%' }} placeholder={itemData.item.value} placeholderTextColor='#000' onChange={ItemValueChangedHandler} editable={saveIcon} onBlur={() => InputValueBlurHandler(itemData.item)} />
+                            <TextInput style={{ width: '20%' }} placeholder={itemData.item.quantity} placeholderTextColor='#000' onChange={ItemQuantityChangedHandler} editable={saveIcon} onBlur={() => InputQuantityBlurHandler(itemData.item)} />
                             <TouchableOpacity style={{ width: '10%' }} activeOpacity={0.8} onPress={() => onDeletePressHandler(itemData.item)}>
                                 <Icon name="minus" size={15} color="#696b6a" />
                             </TouchableOpacity>

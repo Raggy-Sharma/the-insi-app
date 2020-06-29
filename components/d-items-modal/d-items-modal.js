@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Modal, TextInput, Text, FlatList, ScrollView } from 'react-native';
+import { View, Modal, TextInput, Text, FlatList } from 'react-native';
 import { Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { DModalStyles } from './d-litems-modal.styles'
@@ -24,9 +24,8 @@ const DItemsModal = props => {
     }
 
     const saveItemsListHandler = () => {
-        var shpid = availableShops.length.toString()
-        dispatch(addNewShop({ id: shpid, shopName: props.modalHeader, timeStamp: moment().format('DD MMM, YYYY hh:mm')}))
-        dispatch(addShoppingList({ shopId: shpid, shopName: props.modalHeader, shoppingList: dItemList }));
+        dispatch(addNewShop({ shopName: props.modalHeader, timeStamp: moment().format('DD MMM, YYYY hh:mm'), shoppingList: dItemList}))
+        // dispatch(addShoppingList({ shopId: shpid, shopName: props.modalHeader, shoppingList: dItemList }));
         setDItem('');
         setDQty('');
         setDItemList([])

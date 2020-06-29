@@ -7,7 +7,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { editShoppingList } from '../../store/actions/shopsList'
 
 const DItemsEditModal = props => {
-    const [shareData, setShareData] = useState('');
     const [itemsToEdit, setItemsToEdit] = useState();
     const [editableItem, setEditableItem] = useState('');
     const [editableQuantity, setEditableQuantity] = useState('');
@@ -16,10 +15,14 @@ const DItemsEditModal = props => {
     const [saveIcon, setSaveIcon] = useState(false);
     const shoppingList = useSelector(state => state.shopsList.shoppingList);
     const dispatch = useDispatch();
-    const state = useSelector(state => state.shopsList);
+
     useEffect(() => {
-        if (shoppingList.length > 0) {
-            setItemsToEdit(shoppingList.find(ele => ele.shopName === props.shpDetails.shopName && ele.shopId === props.shpDetails.shopId).shoppingList)
+        if (shoppingList) {
+            if (shoppingList.length > 0)
+            {
+                console.log('shoppingList', shoppingList);
+                setItemsToEdit(shoppingList.find(ele => ele.shopName === props.shpDetails.shopName && ele.shopId === props.shpDetails.shopId).shoppingList)
+            }
         }
     }, [shoppingList])
     const onShare = async () => {
@@ -41,7 +44,7 @@ const DItemsEditModal = props => {
         }
     };
 
-    const onEditPressHandler = (editItem) => {
+    const onEditPressHandler = () => {
         setEditIcon(false);
         setSaveIcon(true)
     }
@@ -126,8 +129,8 @@ const DItemsEditModal = props => {
                 <FlatList style={DItemsEditModalStyles.ItemsList} keyExtractor={(item) => item.id} data={itemsToEdit} renderItem={itemData =>
                     <View>
                         <View style={{ flexDirection: 'row', backgroundColor: '#ffff80', justifyContent: "space-between", paddingVertical: 20, paddingHorizontal: 10, borderBottomColor: '#000', borderBottomWidth: 0.25 }}>
-                            <TextInput style={{ width: '70%' }} placeholder={itemData.item.value} placeholderTextColor='#000' onChange={ItemValueChangedHandler} editable={saveIcon} onBlur={() => InputValueBlurHandler(itemData.item)} />
-                            <TextInput style={{ width: '20%' }} placeholder={itemData.item.quantity} placeholderTextColor='#000' onChange={ItemQuantityChangedHandler} editable={saveIcon} onBlur={() => InputQuantityBlurHandler(itemData.item)} />
+                            <TextInput style={{ width: '70%' }} placeholder={itemData.item.value} placeholderTextColor='#000' onChange={ItemValueChangedHandler} editable={saveIcon} onEndEditing={() => InputValueBlurHandler(itemData.item)} />
+                            <TextInput style={{ width: '20%' }} placeholder={itemData.item.quantity} placeholderTextColor='#000' onChange={ItemQuantityChangedHandler} editable={saveIcon} onEndEditing={() => InputQuantityBlurHandler(itemData.item)} />
                             <TouchableOpacity style={{ width: '10%' }} activeOpacity={0.8} onPress={() => onDeletePressHandler(itemData.item)}>
                                 <Icon name="minus" size={15} color="#696b6a" />
                             </TouchableOpacity>

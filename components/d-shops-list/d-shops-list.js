@@ -7,7 +7,8 @@ import DModal from '../d-items-modal/d-items-modal';
 import DItemsEditModal from '../d-edit-items-modal/d-edit-items-modal';
 import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
-import { addShoppingList } from '../../store/actions/shopsList'
+import { addShoppingList } from '../../store/actions/shopsList';
+import { fetchShopsList } from '../../store/actions/shopsList';
 
 
 if (
@@ -16,6 +17,7 @@ if (
 ) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
+
 
 const ShopsListComp = props => {
 
@@ -26,6 +28,11 @@ const ShopsListComp = props => {
   const availableShoppingList = useSelector(state => state.shopsList.shoppingList)
   const dispatch = useDispatch();
 
+  useEffect(() => { 
+    dispatch(fetchShopsList())
+  }, [dispatch])
+
+
   const expandList = (item) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
     setExpanded(!expanded);
@@ -34,7 +41,7 @@ const ShopsListComp = props => {
   }
 
   const editItemsModalHandler = (item) => {
-    setShopDetails({ shopId: item.id, shopName: item.shopName})
+    setShopDetails({ shopId: item.id, shopName: item.shopName })
     setTimeout(() => setShowEditModal(true), 100)
   }
 
@@ -53,7 +60,7 @@ const ShopsListComp = props => {
         {itemData.item.expanded && (<FlatList style={{ padding: 5, backgroundColor: '#35b5ff', borderBottomLeftRadius: 20 }} data={availableShoppingList.find(ele => ele.shopId === itemData.item.id && ele.shopName === itemData.item.shopName).shoppingList} keyExtractor={ele => ele.id} renderItem={element => <View style={{ padding: 10, borderBottomColor: '#000', borderBottomWidth: 0.25, flexDirection: 'row', justifyContent: "space-between" }}><Text>{element.item.value}</Text><Text>{element.item.quantity}</Text></View>} />)}
         {/* {itemData.item.initEditModal && <DItemsEditModal isModalShow={showEditModal} itemsToEdit={itemData.item} closeEditModal={() => { closeModalHandler(itemData.item) }} />} */}
       </View>} style={AppStyles.listContainer} />
-      {shopDetails !== undefined && <DItemsEditModal isModalShow={showEditModal} closeEditModal={closeEditModalHandler} shpDetails={shopDetails}/>}
+      {shopDetails !== undefined && <DItemsEditModal isModalShow={showEditModal} closeEditModal={closeEditModalHandler} shpDetails={shopDetails} />}
     </View>
   )
 }

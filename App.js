@@ -1,14 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, FlatList, LayoutAnimation, Platform, TouchableOpacity, UIManager, } from 'react-native';
-import { AppStyles } from './App.styles'
-import DItemInput from './components/d-item-input/d-item-input'
-import DListItem from './components/d-list-item/d-list-item';
-import DModal from './components/d-items-modal/d-items-modal';
-import DItemsEditModal from './components/d-edit-items-modal/d-edit-items-modal';
-import ShopsListComp from './components/d-shops-list/d-shops-list'
-import moment from 'moment';
+import { Platform, UIManager } from 'react-native';
+import ShopsListComp from './components/d-shops-list/d-shops-list';
+import ReduxThunk from 'redux-thunk';
 
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import shopsListReducer from './store/reducers/shopList';
 
@@ -22,7 +17,7 @@ const rootReducer = combineReducers({
   shopsList: shopsListReducer
 })
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 
 export default function App() {

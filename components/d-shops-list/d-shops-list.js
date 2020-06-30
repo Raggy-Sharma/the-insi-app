@@ -8,7 +8,7 @@ import DItemsEditModal from '../d-edit-items-modal/d-edit-items-modal';
 import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
 import { addShoppingList } from '../../store/actions/shopsList';
-import { fetchShopsList } from '../../store/actions/shopsList';
+import { fetchShopsList, fetchShoppingList } from '../../store/actions/shopsList';
 
 
 if (
@@ -29,7 +29,8 @@ const ShopsListComp = props => {
   const dispatch = useDispatch();
 
   useEffect(() => { 
-    dispatch(fetchShopsList())
+    dispatch(fetchShopsList());
+    dispatch(fetchShoppingList())
   }, [dispatch])
 
 

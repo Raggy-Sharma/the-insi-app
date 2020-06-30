@@ -1,4 +1,4 @@
-import { ADD_NEW_SHOP, ADD_SHOPPING_LIST, EDIT_SHOPPING_LIST, SET_SHOPS_LIST } from '../actions/shopsList';
+import { ADD_NEW_SHOP, ADD_SHOPPING_LIST, EDIT_SHOPPING_LIST, SET_SHOPS_LIST, SET_SHOPPING_LIST } from '../actions/shopsList';
 
 const initialState = {
     listOfShops: [],
@@ -9,7 +9,12 @@ const shopsListReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_SHOPS_LIST: {
             return {
-                listOfShops: action.listOfShops
+                ...state, listOfShops: action.listOfShops
+            }
+        }
+        case SET_SHOPPING_LIST: {
+            return {
+                ...state, shoppingList: action.shoppingList
             }
         }
         case ADD_NEW_SHOP: {

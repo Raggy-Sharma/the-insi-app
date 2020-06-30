@@ -20,7 +20,6 @@ const DItemsEditModal = props => {
         if (shoppingList) {
             if (shoppingList.length > 0)
             {
-                console.log('shoppingList', shoppingList);
                 setItemsToEdit(shoppingList.find(ele => ele.shopName === props.shpDetails.shopName && ele.shopId === props.shpDetails.shopId).shoppingList)
             }
         }

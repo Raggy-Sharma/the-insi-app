@@ -18,8 +18,7 @@ const DItemsEditModal = props => {
 
     useEffect(() => {
         if (shoppingList) {
-            if (shoppingList.length > 0)
-            {
+            if (shoppingList.length > 0) {
                 setItemsToEdit(shoppingList.find(ele => ele.shopName === props.shpDetails.shopName && ele.shopId === props.shpDetails.shopId).shoppingList)
             }
         }
@@ -36,7 +35,6 @@ const DItemsEditModal = props => {
                     props.closeEditModal()
                 }
             } else if (result.action === Share.dismissedAction) {
-                // dismissed
             }
         } catch (error) {
             alert(error.message);

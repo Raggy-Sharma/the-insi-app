@@ -1,4 +1,4 @@
-import { ADD_NEW_SHOP, ADD_SHOPPING_LIST, EDIT_SHOPPING_LIST, SET_SHOPS_LIST, SET_SHOPPING_LIST } from '../actions/shopsList';
+import { ADD_NEW_SHOP, ADD_SHOPPING_LIST, EDIT_SHOPPING_LIST, SET_SHOPS_LIST, SET_SHOPPING_LIST , DELETE_SHOP } from '../actions/shopsList';
 
 const initialState = {
     listOfShops: [],
@@ -31,6 +31,13 @@ const shopsListReducer = (state = initialState, action) => {
             })
             state.shoppingList.shoppingList = itemsList
             return { ...state, shoppingList: [...state.shoppingList] }
+        }
+        case DELETE_SHOP: {
+            var index = state.listOfShops.indexOf(state.listOfShops.find(ele => ele.id === action.shopId));
+            state.listOfShops.splice(index, 1);
+            // index = state.shoppingList.indexOf(state.shoppingList.find(ele => ele.shopId === action.shopId));
+            // state.shoppingList.splice(index, 1);
+            return { ...state }
         }
         default: {
             return state

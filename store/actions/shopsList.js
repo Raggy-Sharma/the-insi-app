@@ -4,6 +4,7 @@ export const EDIT_SHOPPING_LIST = 'EDIT_SHOPPING_LIST';
 export const EDIT_SHOP = 'EDIT_SHOP';
 export const SET_SHOPS_LIST = 'SET_SHOPS_LIST';
 export const SET_SHOPPING_LIST = 'SET_SHOPPING_LIST';
+export const DELETE_SHOP = 'DELETE_SHOP';
 
 export const fetchShopsList = () => {
     return async dispatch => {
@@ -64,7 +65,7 @@ export const addNewShop = (newShop) => {
 export const addShoppingList = (shoppingList) => {
     return async dispatch => {
         const response = await fetch(`https://rn-dinsi-app.firebaseio.com/shoppingList/${shoppingList.shopId}.json`, {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -77,12 +78,27 @@ export const addShoppingList = (shoppingList) => {
 export const editShoppingList = (editedList) => {
     return async dispatch => {
         await fetch(`https://rn-dinsi-app.firebaseio.com/shoppingList/${editedList.shopId}.json`, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(editedList)
         });
         dispatch({ type: EDIT_SHOPPING_LIST, editedList })
+    }
+}
+
+export const deleteShopWithItems = (shopId) => {
+    return async dispatch => {
+        await fetch(`https://rn-dinsi-app.firebaseio.com/shops/${shopId}.json`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        await fetch(`https://rn-dinsi-app.firebaseio.com/shoppingList/${shopId}.json`, {
+            method: 'DELETE',
+        });
+        dispatch({type: DELETE_SHOP, shopId: shopId});
     }
 }

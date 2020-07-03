@@ -63,18 +63,26 @@ export const addNewShop = (newShop) => {
 
 export const addShoppingList = (shoppingList) => {
     return async dispatch => {
-        const response = await fetch('https://rn-dinsi-app.firebaseio.com/shoppingList.json', {
+        const response = await fetch(`https://rn-dinsi-app.firebaseio.com/shoppingList/${shoppingList.shopId}.json`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(shoppingList)
         });
-
         dispatch({ type: ADD_SHOPPING_LIST, shoppingList: shoppingList })
     }
 }
 
 export const editShoppingList = (editedList) => {
-    return { type: EDIT_SHOPPING_LIST, editedList }
+    return async dispatch => {
+        await fetch(`https://rn-dinsi-app.firebaseio.com/shoppingList/${editedList.shopId}.json`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(editedList)
+        });
+        dispatch({ type: EDIT_SHOPPING_LIST, editedList })
+    }
 }

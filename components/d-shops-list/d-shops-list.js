@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, FlatList, LayoutAnimation, Platform, TouchableOpacity, UIManager, } from 'react-native';
+import { Text, View, FlatList, LayoutAnimation, Platform, TouchableOpacity, UIManager, ActivityIndicator } from 'react-native';
 import { AppStyles } from '../../App.styles'
 import DItemInput from '../d-item-input/d-item-input'
 import DListItem from '../d-list-item/d-list-item';
-import DModal from '../d-items-modal/d-items-modal';
 import DItemsEditModal from '../d-edit-items-modal/d-edit-items-modal';
 import { useSelector, useDispatch } from 'react-redux';
-import moment from 'moment';
-import { addShoppingList } from '../../store/actions/shopsList';
 import { fetchShopsList, fetchShoppingList } from '../../store/actions/shopsList';
 
 
@@ -22,17 +19,22 @@ if (
 const ShopsListComp = props => {
 
   const [expanded, setExpanded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [shopDetails, setShopDetails] = useState()
   const availableShops = useSelector(state => state.shopsList.listOfShops);
   const availableShoppingList = useSelector(state => state.shopsList.shoppingList)
   const dispatch = useDispatch();
 
-  useEffect(() => { 
-    dispatch(fetchShopsList());
-    dispatch(fetchShoppingList())
+  useEffect(() => {
+    const loadShopsAndItems = async () => {
+      setIsLoading(true);
+      await dispatch(fetchShopsList());
+      await dispatch(fetchShoppingList());
+      setIsLoading(false);
+    }
+    loadShopsAndItems()
   }, [dispatch])
-
 
   const expandList = (item) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
@@ -49,6 +51,14 @@ const ShopsListComp = props => {
   const closeEditModalHandler = () => {
     setShopDetails();
     setShowEditModal(false)
+  }
+
+  if (isLoading) {
+    return (
+      <View style={AppStyles.loadingSpinner}>
+        <ActivityIndicator size="large" color="#d11b1b" />
+      </View>
+    )
   }
 
   return (

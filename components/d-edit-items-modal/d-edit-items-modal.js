@@ -4,10 +4,14 @@ import { Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import DItemsEditModalStyles from './d-edit-items-modal.styles'
 import { useSelector, useDispatch } from 'react-redux';
-import { editShoppingList } from '../../store/actions/shopsList'
+import { editShoppingList, fetchShoppingList } from '../../store/actions/shopsList'
+import UpdatePrice from '../update-price/update-price'
 
 const DItemsEditModal = props => {
     const [itemsToEdit, setItemsToEdit] = useState();
+    const [modalAction, setModalAction] = useState('Edit')
+    const [submitIcon, setSubmitIcon] = useState('share-alt');
+    const [submitText, setSubmitText] = useState('Share')
     const [updatePrice, setUpdatePrice] = useState(false)
     const [editableItem, setEditableItem] = useState('');
     const [editableQuantity, setEditableQuantity] = useState('');
@@ -19,7 +23,8 @@ const DItemsEditModal = props => {
 
     useEffect(() => {
         if (props.isModalShow) {
-            if (!itemsToEdit.hasOwnProperty('price')) {
+            const tempShoppingBuffer = shoppingList.find(ele => ele.shopName === props.shpDetails.shopName && ele.shopId === props.shpDetails.shopId)
+            if (!tempShoppingBuffer.hasOwnProperty('hasPrice')) {
                 setTimeout(() => {
                     triggerUpdatePriceAlert()
                 }, 500);
@@ -46,10 +51,24 @@ const DItemsEditModal = props => {
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                 },
-                { text: "Sure", onPress: () => setUpdatePrice(true) }
+                {
+                    text: "Sure", onPress: () => {
+                        setUpdatePrice(true);
+                        setModalAction('Update price for');
+                        setSubmitIcon('floppy-o');
+                        setSubmitText('Save');
+                    }
+                }
             ],
             { cancelable: false }
         );
+    }
+
+    const onSubmitHandler = () => {
+        if (submitIcon === 'share-alt')
+            onShare();
+        if (submitIcon === 'floppy-o')
+            SavePricesHandlesr();
     }
     const onShare = async () => {
         try {
@@ -87,7 +106,14 @@ const DItemsEditModal = props => {
     }
 
     const closeEditModalHandler = () => {
-        props.closeEditModal()
+        if (submitIcon === 'floppy-o') {
+            setSubmitIcon('share-alt');
+            setUpdatePrice(false);
+            setSubmitText('Share');
+            setModalAction('Edit');
+        }
+        else
+            props.closeEditModal()
     }
 
     const ItemValueChangedHandler = (event) => {
@@ -134,33 +160,40 @@ const DItemsEditModal = props => {
         }
     }
 
+    const SavePricesHandlesr = () => {
+        dispatch(editShoppingList({ shopId: props.shpDetails.shopId, shopName: props.shpDetails.shopName, shoppingList: itemsToEdit, hasPrice: true }))
+        dispatch(fetchShoppingList())
+        Alert.alert(
+            "Success!",
+            "Item prices have been successfully updated.",
+            [
+                {
+                    text: "Ok", onPress: () => props.closeEditModal()
+                }
+            ],
+            { cancelable: false }
+        );
+    }
+
     return (
         <Modal visible={props.isModalShow} animationType='slide'>
             <View style={DItemsEditModalStyles.ModalContainer}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <View style={{ width: '90%' }}>
-                        <Text style={DItemsEditModalStyles.ModalHeader}>Items from {props.shpDetails.shopName}</Text>
+                        <Text style={DItemsEditModalStyles.ModalHeader}>{modalAction} items from {props.shpDetails.shopName}</Text>
                     </View>
-                    {editIcon &&
+                    {(editIcon && !updatePrice) &&
                         <TouchableOpacity style={{ width: '10%', marginVertical: 15 }} activeOpacity={0.8} onPress={onEditPressHandler}>
                             <Icon name="pencil" size={15} color="#696b6a" />
                         </TouchableOpacity>
                     }
-                    {saveIcon &&
+                    {(saveIcon && !updatePrice) &&
                         <TouchableOpacity style={{ width: '10%', marginVertical: 15 }} activeOpacity={0.8} onPress={onSavePressHandler}>
                             <Icon name="floppy-o" size={15} color="#696b6a" />
                         </TouchableOpacity>}
                 </View>
                 {updatePrice ?
-                    <View>
-                        <FlatList style={DItemsEditModalStyles.ItemsList} keyExtractor={(item) => item.id} data={itemsToEdit} renderItem={itemData =>
-                            <View style={{flexDirection: 'row', justifyContent: "space-between", marginVertical: 5}}>
-                                <Text style={{width: '70%', paddingVertical: 10, paddingHorizontal: 10, borderWidth: 0.25, marginRight: 2}}>{itemData.item.value}</Text>
-                                <TextInput placeholder='Price' style={{width: '20%', borderWidth: 0.25, paddingVertical: 10, textAlign: 'center'}} keyboardType='number-pad'/>
-                            </View>
-                        }
-                        />
-                    </View>
+                    <UpdatePrice updatePriceItems={itemsToEdit} onSavePress={SavePricesHandlesr} />
                     :
                     <View style={{ flex: 1 }}>
                         <FlatList style={DItemsEditModalStyles.ItemsList} keyExtractor={(item) => item.id} data={itemsToEdit} renderItem={itemData =>
@@ -175,15 +208,13 @@ const DItemsEditModal = props => {
                             </View>
                         }
                         />
-                        <View style={DItemsEditModalStyles.btnContainer}>
-                            <View style={DItemsEditModalStyles.modalBtn}><Button title='Share' icon={<Icon name="share-alt" size={10} color="#fff" style={{ marginRight: 20 }} />} onPress={onShare} /></View>
-                            <View style={DItemsEditModalStyles.modalBtn}><Button title='Cancel' icon={<Icon name="times" size={10} color="#fff" style={{ marginRight: 20 }} />} onPress={closeEditModalHandler} color="#f00" buttonStyle={{ backgroundColor: 'red' }} /></View>
-                        </View>
                     </View>}
-
+                <View style={DItemsEditModalStyles.btnContainer}>
+                    <View style={DItemsEditModalStyles.modalBtn}><Button title={submitText} icon={<Icon name={submitIcon} size={10} color="#fff" style={{ marginRight: 20 }} />} onPress={onSubmitHandler} /></View>
+                    <View style={DItemsEditModalStyles.modalBtn}><Button title='Cancel' icon={<Icon name="times" size={10} color="#fff" style={{ marginRight: 20 }} />} onPress={closeEditModalHandler} color="#f00" buttonStyle={{ backgroundColor: 'red' }} /></View>
+                </View>
 
             </View>
-
         </Modal >
     )
 

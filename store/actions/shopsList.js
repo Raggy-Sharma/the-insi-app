@@ -13,12 +13,11 @@ export const fetchShopsList = () => {
         const resData = await response.json();
 
         const loadedShopsList = [];
-
-        for(key in resData) {
-            loadedShopsList.push({id: key, shopName: resData[key].shopName, timeStamp: resData[key].timeStamp})
+        for (key in resData) {
+            loadedShopsList.push({ id: key, shopName: resData[key].shopName, timeStamp: resData[key].timeStamp })
         };
 
-        dispatch({type: SET_SHOPS_LIST, listOfShops: loadedShopsList})
+        dispatch({ type: SET_SHOPS_LIST, listOfShops: loadedShopsList })
     }
 }
 
@@ -30,11 +29,14 @@ export const fetchShoppingList = () => {
 
         const loadedShoppingList = [];
 
-        for(key in resData) {
-            loadedShoppingList.push({shopId: resData[key].shopId, shopName: resData[key].shopName, shoppingList: resData[key].shoppingList})
+        for (key in resData) {
+            resData[key].hasOwnProperty('hasPrice') ? 
+            loadedShoppingList.push({ shopId: resData[key].shopId, shopName: resData[key].shopName, shoppingList: resData[key].shoppingList, hasPrice: resData[key].hasPrice }) :
+            loadedShoppingList.push({ shopId: resData[key].shopId, shopName: resData[key].shopName, shoppingList: resData[key].shoppingList})
         }
 
-        dispatch({type: SET_SHOPPING_LIST, shoppingList: loadedShoppingList})
+
+        dispatch({ type: SET_SHOPPING_LIST, shoppingList: loadedShoppingList })
     }
 }
 
@@ -99,6 +101,6 @@ export const deleteShopWithItems = (shopId) => {
         await fetch(`https://rn-dinsi-app.firebaseio.com/shoppingList/${shopId}.json`, {
             method: 'DELETE',
         });
-        dispatch({type: DELETE_SHOP, shopId: shopId});
+        dispatch({ type: DELETE_SHOP, shopId: shopId });
     }
 }

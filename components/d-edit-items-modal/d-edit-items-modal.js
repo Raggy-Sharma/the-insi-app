@@ -11,6 +11,7 @@ const DItemsEditModal = props => {
     const [itemsToEdit, setItemsToEdit] = useState();
     const [modalAction, setModalAction] = useState('Edit')
     const [submitIcon, setSubmitIcon] = useState('share-alt');
+    const [totalAmount, setTotalAmount] = useState(0);
     const [submitText, setSubmitText] = useState('Share')
     const [updatePrice, setUpdatePrice] = useState(false)
     const [editableItem, setEditableItem] = useState('');
@@ -23,16 +24,14 @@ const DItemsEditModal = props => {
 
     useEffect(() => {
         if (props.isModalShow) {
-
-            setTimeout(() => {
-                const tempShoppingBuffer = shoppingList.find(ele => ele.shopName === props.shpDetails.shopName && ele.shopId === props.shpDetails.shopId)
-                if (!tempShoppingBuffer.shoppingList.map(ele => ele.hasOwnProperty('price'))[0]) {
-                    setTimeout(() => {
-                        triggerUpdatePriceAlert()
-                    }, 500);
-                }
-            }, 100)
-
+            const tempShoppingBuffer = shoppingList.find(ele => ele.shopName === props.shpDetails.shopName && ele.shopId === props.shpDetails.shopId)
+            const totalAmountTobeSet = tempShoppingBuffer.shoppingList.reduce((a, b) => a + (Number(b.price || 0)), 0);
+            setTotalAmount(totalAmountTobeSet);
+            if (!tempShoppingBuffer.shoppingList.map(ele => ele.hasOwnProperty('price'))[0]) {
+                setTimeout(() => {
+                    triggerUpdatePriceAlert()
+                }, 500);
+            }
         }
         if (shoppingList) {
             if (shoppingList.length > 0) {
@@ -209,6 +208,10 @@ const DItemsEditModal = props => {
                         }
                         />
                     </View>}
+                {totalAmount > 0 && 
+                <View style={DItemsEditModalStyles.totalAmountContainer}>
+                    <Text style={DItemsEditModalStyles.totalAmount}>Total: {totalAmount}</Text>
+                </View>}
                 <View style={DItemsEditModalStyles.btnContainer}>
                     <View style={DItemsEditModalStyles.modalBtn}><Button title={submitText} icon={<Icon name={submitIcon} size={10} color="#fff" style={{ marginRight: 20 }} />} onPress={onSubmitHandler} /></View>
                     <View style={DItemsEditModalStyles.modalBtn}><Button title='Cancel' icon={<Icon name="times" size={10} color="#fff" style={{ marginRight: 20 }} />} onPress={closeEditModalHandler} color="#f00" buttonStyle={{ backgroundColor: 'red' }} /></View>

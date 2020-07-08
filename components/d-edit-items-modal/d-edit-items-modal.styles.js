@@ -23,6 +23,15 @@ const DItemsEditModalStyles = StyleSheet.create({
     modalBtn: {
         marginHorizontal: 5,
         flex: 1
+    },
+    totalAmountContainer: {
+        flexDirection: 'row', 
+        justifyContent: 'flex-end',
+        marginVertical: 10
+    },
+    totalAmount: {
+        fontSize: 20,
+        fontWeight: 'bold'
     }
 })
 

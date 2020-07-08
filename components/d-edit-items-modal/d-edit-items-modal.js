@@ -23,12 +23,16 @@ const DItemsEditModal = props => {
 
     useEffect(() => {
         if (props.isModalShow) {
-            const tempShoppingBuffer = shoppingList.find(ele => ele.shopName === props.shpDetails.shopName && ele.shopId === props.shpDetails.shopId)
-            if (!tempShoppingBuffer.hasOwnProperty('hasPrice')) {
-                setTimeout(() => {
-                    triggerUpdatePriceAlert()
-                }, 500);
-            }
+
+            setTimeout(() => {
+                const tempShoppingBuffer = shoppingList.find(ele => ele.shopName === props.shpDetails.shopName && ele.shopId === props.shpDetails.shopId)
+                if (!tempShoppingBuffer.shoppingList.map(ele => ele.hasOwnProperty('price'))[0]) {
+                    setTimeout(() => {
+                        triggerUpdatePriceAlert()
+                    }, 500);
+                }
+            }, 100)
+
         }
         if (shoppingList) {
             if (shoppingList.length > 0) {
@@ -43,12 +47,7 @@ const DItemsEditModal = props => {
             "Do you want to update price for the items added?",
             [
                 {
-                    text: "Maybe, later",
-                    onPress: () => console.log("Ask me later pressed")
-                },
-                {
                     text: "No",
-                    onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                 },
                 {
@@ -162,6 +161,7 @@ const DItemsEditModal = props => {
 
     const SavePricesHandlesr = () => {
         dispatch(editShoppingList({ shopId: props.shpDetails.shopId, shopName: props.shpDetails.shopName, shoppingList: itemsToEdit, hasPrice: true }))
+        setUpdatePrice(false)
         dispatch(fetchShoppingList())
         Alert.alert(
             "Success!",

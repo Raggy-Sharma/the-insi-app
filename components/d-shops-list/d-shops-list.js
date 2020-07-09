@@ -3,6 +3,7 @@ import { Text, View, FlatList, LayoutAnimation, Platform, TouchableOpacity, UIMa
 import { AppStyles } from '../../App.styles'
 import DItemInput from '../d-item-input/d-item-input'
 import DListItem from '../d-list-item/d-list-item';
+import DShopTile from '../d-shop-tile/d-shop-tile'
 import DItemsEditModal from '../d-edit-items-modal/d-edit-items-modal';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchShopsList, fetchShoppingList, deleteShopWithItems } from '../../store/actions/shopsList';
@@ -72,6 +73,15 @@ const ShopsListComp = props => {
       { cancelable: false }
     );
   }
+  const bgColors = [
+    '#7afcff',
+    '#feff9c',
+    '#ffd4e7',
+    '#ffff80',
+    '#69c8ff',
+    '#99ffbe'
+  ]
+  const randomiseNum = (min, max) => Math.random() * (max - min) + min;
 
   if (isLoading) {
     return (
@@ -84,14 +94,14 @@ const ShopsListComp = props => {
   return (
     <View style={AppStyles.screen}>
       <DItemInput />
-      <FlatList keyExtractor={(item) => item.id} data={availableShops} renderItem={itemData => <View>
-        <TouchableOpacity activeOpacity={0.8} onPress={() => expandList(itemData.item)} onLongPress={() => editItemsModalHandler(itemData.item)}>
-          <DListItem listItem={itemData.item} deleteShop={() => deleteShopHandler(itemData.item)} />
-        </TouchableOpacity>
-        {itemData.item.expanded && (<FlatList style={{ padding: 5, backgroundColor: '#35b5ff', borderBottomLeftRadius: 20 }} data={availableShoppingList.find(ele => ele.shopId === itemData.item.id && ele.shopName === itemData.item.shopName).shoppingList} keyExtractor={ele => ele.id} renderItem={element => <View style={{ padding: 10, borderBottomColor: '#000', borderBottomWidth: 0.25, flexDirection: 'row', justifyContent: "space-between" }}><Text>{element.item.value}</Text><Text>{element.item.quantity}</Text></View>} />)}
+      <FlatList numColumns='2' keyExtractor={(item) => item.id} data={availableShops} renderItem={itemData => <View style={{flex: 1}}>
+        {/* <TouchableOpacity activeOpacity={0.8} onPress={() => expandList(itemData.item)} onLongPress={() => editItemsModalHandler(itemData.item)}> */}
+          {/* <DListItem listItem={itemData.item} deleteShop={() => deleteShopHandler(itemData.item)} /> */}
+          <DShopTile bgColor={bgColors[Math.floor(randomiseNum(0, 6))]} listItem={itemData.item} deleteShop={() => deleteShopHandler(itemData.item)} onTileLongPress={() => editItemsModalHandler(itemData.item)}/>
+        {/* </TouchableOpacity> */}
+        {/* {itemData.item.expanded && (<FlatList style={{ padding: 5, backgroundColor: '#35b5ff', borderBottomLeftRadius: 20 }} data={availableShoppingList.find(ele => ele.shopId === itemData.item.id && ele.shopName === itemData.item.shopName).shoppingList} keyExtractor={ele => ele.id} renderItem={element => <View style={{ padding: 10, borderBottomColor: '#000', borderBottomWidth: 0.25, flexDirection: 'row', justifyContent: "space-between" }}><Text>{element.item.value}</Text><Text>{element.item.quantity}</Text></View>} />)} */}
         {/* {itemData.item.initEditModal && <DItemsEditModal isModalShow={showEditModal} itemsToEdit={itemData.item} closeEditModal={() => { closeModalHandler(itemData.item) }} />} */}
       </View>} style={AppStyles.listContainer} />
-      {shopDetails !== undefined && <DItemsEditModal isModalShow={showEditModal} closeEditModal={closeEditModalHandler} shpDetails={shopDetails} />}
 
     </View>
   )

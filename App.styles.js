@@ -11,6 +11,7 @@ export const AppStyles = StyleSheet.create({
         paddingVertical: 50
     },
     listContainer: {
-        marginVertical: 20
+        marginVertical: 20,
+        padding: 10,
     }
 })

@@ -25,7 +25,6 @@ const DItemsModal = props => {
 
     const saveItemsListHandler = () => {
         dispatch(addNewShop({ shopName: props.modalHeader, timeStamp: moment().format('DD MMM, YYYY hh:mm'), shoppingList: dItemList}))
-        // dispatch(addShoppingList({ shopId: shpid, shopName: props.modalHeader, shoppingList: dItemList }));
         setDItem('');
         setDQty('');
         setDItemList([])

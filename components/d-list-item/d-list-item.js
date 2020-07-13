@@ -5,7 +5,6 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 // import {} from './d-list-item.styles';
 
 const DListItem = props => {
-    console.log(props.listItem)
     return (
         <View style={{ backgroundColor: '#69c8ff', padding: 15, marginVertical: 5, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderTopRightRadius: 20 }}>
             <Text>{props.listItem.value}</Text>
